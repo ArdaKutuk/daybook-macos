@@ -1,0 +1,83 @@
+name: PersonalSecretary
+options:
+  bundleIdPrefix: com.daybook
+  deploymentTarget:
+    macOS: "14.0"
+  createIntermediateGroups: true
+  generateEmptyDirectories: true
+
+settings:
+  base:
+    SWIFT_VERSION: 5.10
+    MACOSX_DEPLOYMENT_TARGET: "14.0"
+    DEVELOPMENT_TEAM: ""
+    CODE_SIGN_STYLE: Automatic
+    ENABLE_HARDENED_RUNTIME: YES
+    ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+
+targets:
+  PersonalSecretary:
+    type: application
+    platform: macOS
+    deploymentTarget: "14.0"
+    sources:
+      - path: Sources/PersonalSecretary
+    info:
+      path: Sources/PersonalSecretary/Resources/Info.plist
+      properties:
+        CFBundleDisplayName: Daybook
+        CFBundleName: Daybook
+        CFBundleShortVersionString: "1.0"
+        CFBundleVersion: "1"
+        LSMinimumSystemVersion: "14.0"
+        LSApplicationCategoryType: public.app-category.productivity
+        LSUIElement: false
+        NSHumanReadableCopyright: "© 2026"
+        NSCalendarsFullAccessUsageDescription: "Daybook can show your Apple Calendar events alongside your tasks and routines."
+        NSCalendarsUsageDescription: "Daybook can show your Apple Calendar events alongside your tasks and routines."
+        NSRemindersFullAccessUsageDescription: "Daybook can show your Apple Calendar events alongside your tasks and routines."
+        LSApplicationSecondaryUIElement: false
+        NSMainStoryboardFile: ""
+        NSPrincipalClass: NSApplication
+    entitlements:
+      path: Sources/PersonalSecretary/Resources/PersonalSecretary.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+        com.apple.security.files.user-selected.read-write: true
+        com.apple.security.files.bookmarks.app-scope: true
+        com.apple.security.personal-information.calendars: true
+        com.apple.security.network.client: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.daybook.PersonalSecretary
+        PRODUCT_NAME: Daybook
+        INFOPLIST_KEY_NSHumanReadableCopyright: "© 2026"
+        GENERATE_INFOPLIST_FILE: false
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "1"
+    postCompileScripts: []
+
+  PersonalSecretaryTests:
+    type: bundle.unit-test
+    platform: macOS
+    deploymentTarget: "14.0"
+    sources:
+      - path: Tests/PersonalSecretaryTests
+    dependencies:
+      - target: PersonalSecretary
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.daybook.PersonalSecretaryTests
+
+schemes:
+  PersonalSecretary:
+    build:
+      targets:
+        PersonalSecretary: all
+        PersonalSecretaryTests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - PersonalSecretaryTests
