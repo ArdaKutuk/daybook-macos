@@ -1,5 +1,8 @@
+import OSLog
 import SwiftData
 import SwiftUI
+
+let appLog = Logger(subsystem: "com.daybook.PersonalSecretary", category: "startup")
 
 @main
 struct PersonalSecretaryApp: App {
@@ -10,18 +13,39 @@ struct PersonalSecretaryApp: App {
     @State private var appState = AppState()
 
     init() {
+        appLog.notice("Application starting")
         let schema = Schema([
             TaskItem.self, Note.self, Routine.self, RoutineCompletion.self,
             FocusSession.self, LocalEvent.self, FileShortcut.self
         ])
-        let configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-        do {
-            modelContainer = try ModelContainer(for: schema, configurations: [configuration])
-        } catch {
-            fatalError("Couldn't create the on-device data store: \(error.localizedDescription)")
-        }
+        modelContainer = Self.makeContainer(schema: schema)
         appDelegate.modelContext = modelContainer.mainContext
         appDelegate.services = services
+        appLog.notice("Main UI initialized")
+    }
+
+    /// Opens the on-disk store, falling back to an in-memory store if it can't
+    /// be read. The existing file is never deleted or rewritten — a bad load is
+    /// reported and the app launches read-only-ish rather than aborting, so the
+    /// user can still reach Settings > Data and export/repair.
+    private static func makeContainer(schema: Schema) -> ModelContainer {
+        let configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+        do {
+            let container = try ModelContainer(for: schema, configurations: [configuration])
+            appLog.notice("Database initialized at \(configuration.url.path, privacy: .public)")
+            return container
+        } catch {
+            appLog.fault("Database initialization failed: \(error.localizedDescription, privacy: .public)")
+        }
+        do {
+            let fallback = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
+            let container = try ModelContainer(for: schema, configurations: [fallback])
+            appLog.warning("Running with a temporary in-memory store; on-disk data was left untouched")
+            return container
+        } catch {
+            appLog.fault("In-memory store failed: \(error.localizedDescription, privacy: .public)")
+            fatalError("Couldn't create any data store: \(error.localizedDescription)")
+        }
     }
 
     var body: some Scene {

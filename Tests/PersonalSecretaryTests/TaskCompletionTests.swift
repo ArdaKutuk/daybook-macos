@@ -27,8 +27,9 @@ final class TaskCompletionTests: XCTestCase {
     }
 
     func testDueDateTimeCombinesDateAndTimeOfDay() {
-        var calendar = Calendar(identifier: .gregorian)
-        calendar.timeZone = TimeZone(identifier: "UTC")!
+        // `dueDateTime` composes the date and time-of-day in the user's local
+        // calendar, so the test has to read them back in that same calendar.
+        let calendar = Calendar.current
         let date = calendar.date(from: DateComponents(year: 2026, month: 8, day: 19))!
         let time = calendar.date(from: DateComponents(year: 2000, month: 1, day: 1, hour: 14, minute: 30))!
 

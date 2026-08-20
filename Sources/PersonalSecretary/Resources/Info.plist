@@ -29,16 +29,12 @@
 	<key>LSUIElement</key>
 	<false/>
 	<key>NSCalendarsFullAccessUsageDescription</key>
-	<string>Daybook can show your Apple Calendar events alongside your tasks and routines.</string>
+	<string>Daybook needs access to Calendar to display your events alongside your tasks and routines.</string>
 	<key>NSCalendarsUsageDescription</key>
-	<string>Daybook can show your Apple Calendar events alongside your tasks and routines.</string>
+	<string>Daybook needs access to Calendar to display your events alongside your tasks and routines.</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>© 2026</string>
-	<key>NSMainStoryboardFile</key>
-	<string></string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
-	<key>NSRemindersFullAccessUsageDescription</key>
-	<string>Daybook can show your Apple Calendar events alongside your tasks and routines.</string>
 </dict>
 </plist>

@@ -5,3 +5,5 @@ xcuserdata/
 *.xcuserstate
 DerivedData/
 .build.output
+build/
+dist/

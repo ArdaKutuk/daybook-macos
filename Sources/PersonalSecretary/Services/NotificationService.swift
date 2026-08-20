@@ -1,4 +1,5 @@
 import Foundation
+import OSLog
 import Observation
 import UserNotifications
 
@@ -14,7 +15,22 @@ final class NotificationService {
     }
 
     private(set) var authorizationState: AuthorizationState = .notDetermined
-    private let center = UNUserNotificationCenter.current()
+
+    /// `UNUserNotificationCenter.current()` raises an Objective-C exception —
+    /// which Swift cannot catch, so it kills the process — when the running
+    /// executable isn't a registered app bundle (unit-test runners, a binary
+    /// invoked outside its .app). Resolving it once behind this check keeps a
+    /// missing bundle identity a disabled feature instead of a launch crash.
+    private static let center: UNUserNotificationCenter? = {
+        guard Bundle.main.bundleIdentifier != nil,
+              Bundle.main.bundleURL.pathExtension == "app" else {
+            appLog.warning("Notifications disabled: not running from an app bundle")
+            return nil
+        }
+        return UNUserNotificationCenter.current()
+    }()
+
+    private var center: UNUserNotificationCenter? { Self.center }
 
     enum Category: String {
         case task, routine, event, focus
@@ -25,6 +41,7 @@ final class NotificationService {
     }
 
     func refreshAuthorization() {
+        guard let center else { return }
         center.getNotificationSettings { [weak self] settings in
             let state: AuthorizationState
             switch settings.authorizationStatus {
@@ -38,6 +55,10 @@ final class NotificationService {
 
     @MainActor
     func requestAuthorization() async {
+        guard let center else {
+            authorizationState = .denied
+            return
+        }
         do {
             let granted = try await center.requestAuthorization(options: [.alert, .sound, .badge])
             authorizationState = granted ? .authorized : .denied
@@ -75,7 +96,7 @@ final class NotificationService {
     }
 
     func notifyFocusSessionCompleted(taskLabel: String) {
-        guard AppSettings.notifFocusEnabled else { return }
+        guard AppSettings.notifFocusEnabled, let center else { return }
         let request = makeRequest(
             identifier: "focus-complete-\(UUID().uuidString)",
             title: "Focus Session Complete",
@@ -86,7 +107,7 @@ final class NotificationService {
     }
 
     private func schedule(identifier: String, title: String, body: String, fireDate: Date, repeats: Bool = false) {
-        guard authorizationState == .authorized, fireDate > .now else { return }
+        guard authorizationState == .authorized, fireDate > .now, let center else { return }
         let components = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: fireDate)
         let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: repeats)
         let request = makeRequest(identifier: identifier, title: title, body: body, trigger: trigger)
@@ -102,6 +123,6 @@ final class NotificationService {
     }
 
     private func cancel(identifier: String) {
-        center.removePendingNotificationRequests(withIdentifiers: [identifier])
+        center?.removePendingNotificationRequests(withIdentifiers: [identifier])
     }
 }

@@ -10,10 +10,20 @@ settings:
   base:
     SWIFT_VERSION: 5.10
     MACOSX_DEPLOYMENT_TARGET: "14.0"
+    # Left empty on purpose: with no team, Xcode signs ad-hoc ("Sign to Run
+    # Locally"), which is enough to run locally. For a distributable build,
+    # supply real values on the command line instead of committing them:
+    #   xcodebuild ... DEVELOPMENT_TEAM=XXXXXXXXXX \
+    #     CODE_SIGN_IDENTITY="Developer ID Application" CODE_SIGN_STYLE=Manual
     DEVELOPMENT_TEAM: ""
     CODE_SIGN_STYLE: Automatic
     ENABLE_HARDENED_RUNTIME: YES
     ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+  configs:
+    Release:
+      # get-task-allow is a debug-only entitlement; leaving it in a Release
+      # build makes the bundle ineligible for notarization.
+      CODE_SIGN_INJECT_BASE_ENTITLEMENTS: NO
 
 targets:
   PersonalSecretary:
@@ -33,11 +43,9 @@ targets:
         LSApplicationCategoryType: public.app-category.productivity
         LSUIElement: false
         NSHumanReadableCopyright: "© 2026"
-        NSCalendarsFullAccessUsageDescription: "Daybook can show your Apple Calendar events alongside your tasks and routines."
-        NSCalendarsUsageDescription: "Daybook can show your Apple Calendar events alongside your tasks and routines."
-        NSRemindersFullAccessUsageDescription: "Daybook can show your Apple Calendar events alongside your tasks and routines."
+        NSCalendarsFullAccessUsageDescription: "Daybook needs access to Calendar to display your events alongside your tasks and routines."
+        NSCalendarsUsageDescription: "Daybook needs access to Calendar to display your events alongside your tasks and routines."
         LSApplicationSecondaryUIElement: false
-        NSMainStoryboardFile: ""
         NSPrincipalClass: NSApplication
     entitlements:
       path: Sources/PersonalSecretary/Resources/PersonalSecretary.entitlements
@@ -51,6 +59,9 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.daybook.PersonalSecretary
         PRODUCT_NAME: Daybook
+        # The bundle ships as Daybook, but the Swift module keeps the target
+        # name so `@testable import PersonalSecretary` in Tests/ resolves.
+        PRODUCT_MODULE_NAME: PersonalSecretary
         INFOPLIST_KEY_NSHumanReadableCopyright: "© 2026"
         GENERATE_INFOPLIST_FILE: false
         MARKETING_VERSION: "1.0"
@@ -68,6 +79,12 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.daybook.PersonalSecretaryTests
+        GENERATE_INFOPLIST_FILE: YES
+        # The app target is named PersonalSecretary but ships as Daybook, so
+        # the generated default (derived from the target name) points at an
+        # executable that doesn't exist.
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/Daybook.app/Contents/MacOS/Daybook"
+        BUNDLE_LOADER: "$(TEST_HOST)"
 
 schemes:
   PersonalSecretary:

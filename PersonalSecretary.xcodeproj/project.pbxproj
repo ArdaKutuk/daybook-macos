@@ -740,6 +740,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -748,7 +749,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.daybook.PersonalSecretaryTests;
 				SDKROOT = macosx;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PersonalSecretary.app/Contents/MacOS/PersonalSecretary";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Daybook.app/Contents/MacOS/Daybook";
 			};
 			name = Release;
 		};
@@ -786,6 +787,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -884,6 +886,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -892,7 +895,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.daybook.PersonalSecretaryTests;
 				SDKROOT = macosx;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PersonalSecretary.app/Contents/MacOS/PersonalSecretary";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Daybook.app/Contents/MacOS/Daybook";
 			};
 			name = Debug;
 		};
@@ -913,6 +916,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.daybook.PersonalSecretary;
+				PRODUCT_MODULE_NAME = PersonalSecretary;
 				PRODUCT_NAME = Daybook;
 				SDKROOT = macosx;
 			};
@@ -935,6 +939,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.daybook.PersonalSecretary;
+				PRODUCT_MODULE_NAME = PersonalSecretary;
 				PRODUCT_NAME = Daybook;
 				SDKROOT = macosx;
 			};

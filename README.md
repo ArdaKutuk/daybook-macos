@@ -49,6 +49,24 @@ open PersonalSecretary.xcodeproj
 Then press ⌘R in Xcode. First launch shows onboarding; subsequent launches
 open straight to your configured Start Page (default: Today).
 
+### Building a distributable app + .dmg
+
+```bash
+./scripts/build-app.sh
+```
+
+This regenerates the project, builds a universal (arm64 + x86_64) Release
+binary, verifies the bundle (executable name, `Info.plist`, architecture,
+signature) and writes `dist/Daybook-1.0.dmg`.
+
+With no signing identity set it signs ad-hoc, which runs locally but shows a
+Gatekeeper prompt on other Macs. For a distributable build, pass your own
+credentials through the environment — they are never stored in the repo:
+
+```bash
+DEVELOPMENT_TEAM=XXXXXXXXXX CODE_SIGN_IDENTITY="Developer ID Application" ./scripts/build-app.sh
+```
+
 ### Command-line build/test (no Xcode required)
 
 A `Package.swift` is included purely as a fast compile/test harness for
