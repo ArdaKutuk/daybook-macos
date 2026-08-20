@@ -20,7 +20,7 @@ struct MenuBarPopoverView: View {
     private var nextEvent: (title: String, time: String)? {
         let now = Date.now
         let upcomingLocal = localEvents.filter { $0.startDate >= now }.min(by: { $0.startDate < $1.startDate })
-        let upcomingExternal = calendarService?.externalEvents.filter { $0.startDate >= now }.min(by: { $0.startDate < $1.startDate })
+        let upcomingExternal = calendarService.externalEvents.filter { $0.startDate >= now }.min(by: { $0.startDate < $1.startDate })
         switch (upcomingLocal, upcomingExternal) {
         case let (.some(local), .some(external)):
             return local.startDate <= external.startDate ? (local.title, local.startDate.timeHHmm) : (external.title, external.startDate.timeHHmm)

@@ -149,7 +149,7 @@ struct CalendarView: View {
             }
         }
         .padding(8)
-        .frame(minHeight: 78, maxWidth: .infinity, alignment: .topLeading)
+        .frame(maxWidth: .infinity, minHeight: 78, alignment: .topLeading)
         .background(isToday ? DT.Color.accentSoftBackground : Color.white)
         .clipShape(RoundedRectangle(cornerRadius: DT.Radius.mdl, style: .continuous))
         .overlay(
